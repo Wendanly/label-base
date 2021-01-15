@@ -62,8 +62,6 @@ const createRoute = (menuList, cb) => {
     addRoutes(); //加载动态路由
     cb();
 }
-
-
 //加载动态路由
 export const addRoutes = () => {
     store.state.ansycRouterList.map(o => o.component = () => import(`@/views${o.path}/index.vue`)); //动态加载路由组件
