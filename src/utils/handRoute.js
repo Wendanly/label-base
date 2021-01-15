@@ -74,8 +74,6 @@ export const addRoutes = () => {
     store.commit('setAnsycRouterStatus', true); //改变全局状态，路由表已挂载完成
 
 }
-
-
 //构建路由模型
 const createRouteCell = item => {
     return {
