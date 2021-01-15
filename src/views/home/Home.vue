@@ -3,7 +3,7 @@
     <Menu></Menu>
     <div class="content" style="position:relative">
       <router-view></router-view>
-      <div>
+      <div style="margin-top:100px">
         个大概大哥大爱的大法师
         <el-button type="primary" @click="jump">跳转</el-button>
         <el-button type="primary" @click="jump1">跳转1</el-button>

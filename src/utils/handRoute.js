@@ -1,7 +1,6 @@
 import store from '@/store'
 import router from '@/router/router.js';
 import localRouterList from '@/router/routerList.js';
-import { resolve } from 'core-js/fn/promise';
 //点击登录按钮并成功后调用此方法，之后进入home页面
 export const getUserInfo = () => {
     return new Promise((resolve, reject) => {
@@ -67,14 +66,10 @@ const createRoute = (menuList, cb) => {
 
 //加载动态路由
 export const addRoutes = () => {
-    //动态加载路由组件
-    let promiseArr = [];
-    store.state.ansycRouterList.map(o => o.component = () => resolve=>require([`@/views${item.MENU_PATH}/index.vue`],resolve));
+    store.state.ansycRouterList.map(o => o.component = () => import(`@/views${o.path}/index.vue`)); //动态加载路由组件
     localRouterList[0].children = localRouterList[0].children.concat(store.state.ansycRouterList); //动态路由表是挂载home的children下面的，要与已有的合并（此场景会在新增、编辑这种页面出现，以上两种页面不是后端返回的，但也是在home的children下，所以要和后端返回的合并）
     console.log(localRouterList); //home下面的所有路由（本地及后端）
-    router.addRoutes(localRouterList).then(resp => {
-        console.log(resp);
-    }); //添加路由
+    router.addRoutes(localRouterList); //添加路由
     console.log(router);
     store.commit('setAnsycRouterStatus', true); //改变全局状态，路由表已挂载完成
 
@@ -92,30 +87,8 @@ const createRouteCell = item => {
             menuType: item.MENU_TYPE,
             menuClass: item.MENU_CLASS
         },
+        //这里不能挂载component 是因为函数无法储存在sessionStorage里
         // component: resolve =>
         //     require([`@/views${item.MENU_PATH}/index.vue`], resolve)
     };
-}
-
-
-const importRouter = kpiList => {
-    let promiseArr = [];
-    kpiList.map(o => {
-        o.map(j => {
-            promiseArr.push(
-                import("@/" + this.pagePath + j.url).then(comp => {
-                    j.flag = this.categoryInfo.categoryId; //添加标志位，判断当前是日成本还是月成本
-                    j.url = comp.default;
-                })
-            );
-        });
-    });
-    Promise.all(promiseArr)
-        .then(re => {
-            //加载完成后做什么
-            this.kpiList = kpiList;
-        })
-        .catch(err => {
-            this.$message.error(err);
-        });
 }
