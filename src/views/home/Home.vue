@@ -78,7 +78,7 @@ export default {
   height: 100%;
   .content {
     height: calc(100% - 60px);
-    background: rgb(219, 215, 215);
+    background: #f7f8fa;
     border: 1px solid red;
     box-sizing: border-box;
     padding: 15px;

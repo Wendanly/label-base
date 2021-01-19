@@ -16,7 +16,12 @@ let routes = [{
         path: '/Login',
         name: 'Login',
         component: resolve => (require(["@/views/Login"], resolve))
-    }
+    },
+    {
+        path: '*', //页面跳转时若匹配不到任何路由则会匹配这个
+        name: 'Nofound',
+        component: resolve => (require(["@/views/Nofound"], resolve))
+    },
 ];
 
 

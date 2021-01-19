@@ -1,0 +1,16 @@
+{
+  "id": "2334762",
+  "name": "labelManage",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "标签管理项目",
+  "glyphs": [
+    {
+      "icon_id": "9260325",
+      "name": "404",
+      "font_class": "notfound",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    }
+  ]
+}

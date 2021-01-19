@@ -74,14 +74,14 @@ export default {
   },
   created() {
     sessionStorage.clear();
-    let stateInitInfo = JSON.parse(localStorage.getItem("stateInitInfo"));
-    stateInitInfo ? this.resetState(stateInitInfo) : "";
+    // let stateInitInfo = JSON.parse(localStorage.getItem("stateInitInfo"));
+    // stateInitInfo ? this.resetState(stateInitInfo) : "";
     this.getValidateCode();
     let dd = JSON.parse(JSON.stringify(this.$store.state));
     console.log(dd);
   },
   computed: {
-    ...mapState(["stateInitInfo"])
+    
   },
   methods: {
     ...mapMutations(["setToken", "setTenants", "resetState"]),

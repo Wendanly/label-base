@@ -64,7 +64,7 @@ const createRoute = (menuList, cb) => {
 }
 //加载动态路由
 export const addRoutes = () => {
-    store.state.ansycRouterList.map(o => o.component = () => import(`@/views${o.path}/index.vue`)); //动态加载路由组件
+    store.state.ansycRouterList.map(o => o.component = () => import(`@/views${o.path}/index.vue`)); //动态挂载路由组件
     localRouterList[0].children = localRouterList[0].children.concat(store.state.ansycRouterList); //动态路由表是挂载home的children下面的，要与已有的合并（此场景会在新增、编辑这种页面出现，以上两种页面不是后端返回的，但也是在home的children下，所以要和后端返回的合并）
     console.log(localRouterList); //home下面的所有路由（本地及后端）
     router.addRoutes(localRouterList); //添加路由
