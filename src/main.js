@@ -25,8 +25,8 @@ if (store.state.token && !store.state.ansycRouterStatus) {
 
 
 router.beforeEach((to, from, next) => {
-  console.log(to, from);
-  console.log(JSON.parse(JSON.stringify(store.state)));
+  // console.log(to, from);
+  // console.log(JSON.parse(JSON.stringify(store.state)));
   if (store.state.token || to.path == '/Login' || to.path == '/') {
     next();
   } else {

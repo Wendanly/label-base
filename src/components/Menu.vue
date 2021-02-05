@@ -4,19 +4,20 @@
     <div class="list">
       <div class="cell-box" v-for="(item,index) in menuList" :key="index">
         <span
+          :class="[activeSubMenuItem.parentMenuId == item.ID?'active-menu':'']"
           v-text="item.meta.name"
-          @click="jumpPage($event,item)"
-          @mouseenter="openDown(index)"
-          @mouseleave="closeDown"
+          class="father-cell"
         ></span>
-        <div class="dropdown-box" @mouseenter="openSubDown" @mouseleave="closeSubDown">
+        <div class="sublist">
           <div
-            class="item"
             v-for="(subItem,inde) in item.children"
             :key="inde"
-            v-text="subItem.meta.name"
-            @click="jumpPage($event,subItem)"
-          ></div>
+            :class="[activeSubMenuItem.path == subItem.path?'active-sub-menu':'']"
+            class="sublist-cell"
+            @click="jumpPage(item,subItem)"
+          >
+            <span v-text="subItem.meta.name"></span>
+          </div>
         </div>
       </div>
     </div>
@@ -34,7 +35,7 @@
 
 <script>
 import { Logout } from "@/api/login.js";
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 export default {
   name: "Menu",
   data() {
@@ -44,34 +45,32 @@ export default {
     console.log("menucteate");
   },
   computed: {
-    ...mapState(["menuList"])
+    ...mapState(["menuList", "activeSubMenuItem"])
   },
   mounted() {
-    let fatherDom = document.createElement("div");
-    fatherDom.setAttribute("class", "sub-menu-wrap");
-    document.body.appendChild(fatherDom);
-    let dom = document.querySelectorAll(".dropdown-box");
-    for (let i = 0, len = dom.length; i < len; i++) {
-      // dom[i].setAttribute("data-no", i);
-      fatherDom.appendChild(dom[i]);
-    }
+    JSON.stringify(this.activeSubMenuItem) != "{}" ? "" : this.initMenuJump(); //
   },
   methods: {
-    jumpPage(item) {
-      console.log(item);
+    ...mapMutations(["setActiveSubMenuItem"]),
+    initMenuJump() {
+      let subItem = this.menuList[0].children[0];
+      this.$router
+        .push({
+          path: subItem.path
+        })
+        .then(res => this.changeActionMenu(res, subItem));
     },
-    openDown(index) {
-      let fatherDom = document.querySelectorAll(".sub-menu-wrap")[0];
-      fatherDom.style.display = "block";
-      let dom = document.querySelectorAll(".dropdown-box");
-      for (let i = 0, len = dom.length; i < len; i++) {
-        dom[i].style.display = "none";
-      }
-      dom[index].style.display = "flex";
+    jumpPage(item, subItem) {
+      this.$router
+        .push({
+          path: subItem.path
+        })
+        .then(res => this.changeActionMenu(res, subItem));
     },
-    closeDown() {
-      let fatherDom = document.querySelectorAll(".sub-menu-wrap")[0];
-      // fatherDom.style.display = "none";
+    changeActionMenu(res, subItem) {
+      //若路由跳转错误（如：路径找不到）则返回的不是对象
+      if (Object.prototype.toString.call(res) == "[object Object]")
+        this.setActiveSubMenuItem(subItem);
     },
     loginOut() {
       Logout()
@@ -87,14 +86,6 @@ export default {
           }
         })
         .catch(err => {});
-    },
-    openSubDown() {
-      let fatherDom = document.querySelectorAll(".sub-menu-wrap")[0];
-      fatherDom.style.display = "block";
-    },
-    closeSubDown() {
-      let fatherDom = document.querySelectorAll(".sub-menu-wrap")[0];
-      // fatherDom.style.display = "none";
     }
   }
 };
@@ -103,6 +94,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 $height: 60px; //一级菜单高度
+$height2: 48px; //二级菜单高度
 .menu {
   width: 100%;
   height: $height;
@@ -122,6 +114,9 @@ $height: 60px; //一级菜单高度
   .list {
     display: flex;
     height: 100%;
+
+    // border: 2px solid yellow;
+    box-sizing: border-box;
     .cell-box {
       width: 150px;
       color: #8a929c;
@@ -129,10 +124,55 @@ $height: 60px; //一级菜单高度
       display: flex;
       justify-content: center;
       align-items: center;
-      span {
+      .father-cell {
         line-height: $height;
         height: $height;
-        cursor: pointer;
+        &:hover {
+          color: #ffffff;
+          + .sublist {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+          }
+        }
+      }
+
+      .sublist {
+        width: 100%;
+        line-height: $height2;
+        height: $height2;
+        background: #ffffff;
+        box-shadow: 0px 0px 6px #888888;
+        position: fixed;
+        display: none;
+
+        top: 59px;
+        left: 0px;
+        z-index: 100;
+        .sublist-cell {
+          border-bottom: 2px solid transparent;
+          color: #333;
+        }
+        &:hover {
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          .sublist-cell:hover {
+            cursor: pointer;
+            color: #2196e7;
+            border-bottom: 2px solid #2196e7;
+          }
+        }
+      }
+
+      //刷新或回退页面使当前菜单还能保持高亮的样式
+      .active-menu {
+        color: #ffffff;
+      }
+      .active-sub-menu {
+        cursor: pointer !important ;
+        color: #2196e7 !important ;
+        border-bottom: 2px solid #2196e7 !important ;
       }
     }
   }
@@ -140,34 +180,6 @@ $height: 60px; //一级菜单高度
     margin-right: 20px;
     /deep/ .el-dropdown-link {
       color: #ffffff;
-    }
-  }
-}
-</style>
-<style lang="scss" >
-$height: 48px; //二级菜单高度
-.sub-menu-wrap {
-  width: 100%;
-  height: $height;
-  display: none;
-  box-sizing: border-box;
-
-  position: absolute;
-  background: #ffffff;
-  top: 59px;
-  width: 100%;
-}
-.dropdown-box {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  .item {
-    line-height: $height;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    &:hover {
-      color: #66b1ff;
-      border-bottom: 2px solid #66b1ff;
     }
   }
 }

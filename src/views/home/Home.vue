@@ -3,15 +3,6 @@
     <Menu></Menu>
     <div class="content" style="position:relative">
       <router-view></router-view>
-      <div style="margin-top:100px">
-        个大概大哥大爱的大法师
-        <el-button type="primary" @click="jump">跳转</el-button>
-        <el-button type="primary" @click="jump1">跳转1</el-button>
-        <el-button type="primary" @click="jump2">跳转2</el-button>
-        <el-button type="primary" @click="jump3">跳转3</el-button>
-        <el-button type="primary" @click="jump4">跳转4</el-button>
-        <el-button type="primary" @click="jump5">跳转5</el-button>
-      </div>
     </div>
   </div>
 </template>
@@ -30,45 +21,13 @@ export default {
     return {};
   },
   created() {
-    console.log("home的create");
-    console.log(this.$router);
+    // console.log("home的create");
+    // console.log(this.$router);
   },
   computed: {
     ...mapState(["tenants"])
   },
-  methods: {
-    jump() {
-      this.$router.push({
-        path: "/labelApply/labelSummary"
-      });
-    },
-
-    jump1() {
-      this.$router.push({
-        path: "/labelApply/labelDevice"
-      });
-    },
-    jump2() {
-      this.$router.push({
-        path: "/sysManage/analysis"
-      });
-    },
-    jump3() {
-      this.$router.push({
-        path: "/sysManage/physicalTabManage"
-      });
-    },
-    jump4() {
-      this.$router.push({
-        path: "/sysManage/PhysicalTableStructure"
-      });
-    },
-    jump5() {
-      this.$router.push({
-        path: "/sysManage/add"
-      });
-    }
-  }
+  methods: {}
 };
 </script>
 

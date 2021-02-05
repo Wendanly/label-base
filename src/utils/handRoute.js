@@ -5,7 +5,7 @@ import localRouterList from '@/router/routerList.js';
 export const getUserInfo = () => {
     return new Promise((resolve, reject) => {
         store.dispatch('getUserInfo').then(res => {
-            console.log(res);
+            // console.log(res);
             getMenuList().then(resp => {
                 resolve('success');
             });
@@ -21,7 +21,7 @@ const getMenuList = () => {
             tenantId: store.state.tenants[0].ID,
             appId: "2"
         }).then(resp => {
-            console.log(resp);
+            // console.log(resp);
             createRoute(resp.menuList, () => {
                 resolve('success');
             });
@@ -55,8 +55,8 @@ const createRoute = (menuList, cb) => {
         Object.assign(o, createRouteCell(o)); //一级菜单与构建好的路由混在一起
         routerList = routerList.concat(JSON.parse(JSON.stringify(tmpArr))); //拼接到总路由表里
     });
-    console.log(JSON.parse(JSON.stringify(routerList)));
-    console.log(JSON.parse(JSON.stringify(menuArr)));
+    // console.log(JSON.parse(JSON.stringify(routerList)));
+    // console.log(JSON.parse(JSON.stringify(menuArr)));
     store.commit('setAnsycRouterList', routerList); //固化动态路由表,以后也用于路由跳转
     store.commit('setMenuList', menuArr); //固化动态路由表,以后也用于菜单渲染
     addRoutes(); //加载动态路由
@@ -64,11 +64,11 @@ const createRoute = (menuList, cb) => {
 }
 //加载动态路由
 export const addRoutes = () => {
-    store.state.ansycRouterList.map(o => o.component = () => import(`@/views${o.path}/index.vue`)); //动态挂载路由组件
+    store.state.ansycRouterList.map(o => o.component = () => import(`@/views/${o.meta.filePath}`)); //动态挂载路由组件
     localRouterList[0].children = localRouterList[0].children.concat(store.state.ansycRouterList); //动态路由表是挂载home的children下面的，要与已有的合并（此场景会在新增、编辑这种页面出现，以上两种页面不是后端返回的，但也是在home的children下，所以要和后端返回的合并）
-    console.log(localRouterList); //home下面的所有路由（本地及后端）
+    // console.log(localRouterList); //home下面的所有路由（本地及后端）
     router.addRoutes(localRouterList); //添加路由
-    console.log(router);
+    // console.log(router);
     store.commit('setAnsycRouterStatus', true); //改变全局状态，路由表已挂载完成
 
 }
@@ -77,10 +77,12 @@ const createRouteCell = item => {
     return {
         path: item.MENU_PATH,
         name: item.MENU_CODE,
+        parentMenuId: item.PARENT_MENU_ID,
         meta: {
             id: item.ID,
             name: item.MENU_NAME,
             menuType: item.MENU_TYPE,
+            filePath: item.MENU_FILE_PATH,
             menuClass: item.MENU_CLASS
         },
         //这里不能挂载component 是因为函数无法储存在sessionStorage里

@@ -17,6 +17,7 @@ let vuexLocal = new VuexPersistence({
       tenants: val.tenants,
       ansycRouterList: val.ansycRouterList,
       menuList: val.menuList,
+      activeSubMenuItem: val.activeSubMenuItem,
 
     }
   }
@@ -29,6 +30,7 @@ export default new Vuex.Store({
     ansycRouterList: [], //动态路由表是否已获得，需固化
     ansycRouterStatus: false, //当前路由表是否被刷新清除
     menuList: [],
+    activeSubMenuItem: {}, //当前被激活的菜单
 
   },
   mutations: {
@@ -50,13 +52,17 @@ export default new Vuex.Store({
     setMenuList(state, val) {
       state.menuList = val;
     },
-    resetState(state, val) {
-      for (let i in state) {
-        state[i] = val[i];
-      }
+    setActiveSubMenuItem(state, val) {
+      state.activeSubMenuItem = val;
     },
+    // resetState(state, val) {
+    //   for (let i in state) {
+    //     state[i] = val[i];
+    //   }
+    // },
   },
   actions: {
+    //获取用户信息
     getUserInfo({
       commit
     }) {
@@ -68,6 +74,7 @@ export default new Vuex.Store({
         });
       });
     },
+    //获取菜单信息
     getMenuList({
       commit
     }, params) {
